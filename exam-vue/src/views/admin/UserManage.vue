@@ -123,14 +123,15 @@
 <script>
 import user from '@/api/user'
 import utils from '@/utils/utils'
+import auth from '@/api/auth'
 
 export default {
   name: 'UserManage',
   data () {
     //自定义用户名校验规则
-    var validateUsername = (rule, value, callback) => {
-      this.$http.get(this.API.checkUsername + '/' + this.addForm.username).then((resp) => {
-        if (resp.data.data) {
+    const validateUsername = (rule, value, callback) => {
+      auth.checkUsername(this.addForm.username).then((resp) => {
+        if (resp.data) {
           callback()
         } else {
           callback(new Error('用户名已存在'))
