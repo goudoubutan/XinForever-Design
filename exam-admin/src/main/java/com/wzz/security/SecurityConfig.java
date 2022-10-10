@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/teacher/**").hasAnyAuthority("teacher", "admin")
                 .mvcMatchers("/admin/**").hasAnyAuthority("admin")
                 // 配合下面的web.ignore 将下面所有的路径的校验都过滤掉了
-                .mvcMatchers("/util/**", "/common/**").permitAll()
+                .mvcMatchers("/util/**", "/common/**", "/actuator/**", "/api/**").permitAll()
 
                 .anyRequest().authenticated()
 
@@ -57,7 +57,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web.ignoring()
                 .antMatchers("/util/**", "/common/**")
-                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/v2/**", "/api/**");
+                .antMatchers("/actuator/**")
+                .antMatchers("/api/**")
+                .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/v2/**");
     }
 //    @Bean
 //    public PasswordEncoder passwordEncoder() {
