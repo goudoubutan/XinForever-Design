@@ -14,9 +14,9 @@ export default {
       method: 'get'
     })
   },
-  getCode () {
+  getCode (id) {
     return request({
-      url: '/util/getCode',
+      url: `/util/getCode?id=${id}`,
       method: 'get'
     })
   },

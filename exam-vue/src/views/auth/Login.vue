@@ -20,7 +20,7 @@
             <el-form-item prop="code">
               <el-input class="code" prefix-icon="el-icon-chat-line-round" v-model="loginForm.code"
                         placeholder="验证码"></el-input>
-              <img :src="`${captchaUrl}/util/getCodeImg`" @click="changeCode" id="code"
+              <img @click="changeCode" id="code"
                    style="float: right;margin-top: 4px;cursor: pointer" title="看不清,点击刷新"
                    alt="验证码"/>
             </el-form-item>
@@ -48,18 +48,18 @@ import utils from '@/utils/utils'
 
 export default {
   name: 'Login',
-  components: { Footer },
-  data () {
+  components: {Footer},
+  data() {
     return {
       ...LoginFunc,
       captchaUrl: process.env.VUE_APP_CAPTCHA_URL
     }
   },
-  created () {
+  created() {
     // 检验用户是否存在token,存在直接跳转主页
     utils.checkToken('/index')
   },
-  mounted () {
+  mounted() {
     loginFunc.changeCode()
   }
 }

@@ -52,19 +52,22 @@ const loginFormRules = {
     }
   ],
 }
+// 后台验证码id
+let codeId
 // 后台的验证码
-let code = window.onload = () => getCode()
+let code
 // 获取后台验证码
 const getCode = () => {
-  auth.getCode().then(resp => {
-    code = resp.message
+  auth.getCode(codeId).then(resp => {
+    code = resp.data
   })
 }
 // 点击图片刷新验证码
 const changeCode = () => {
-  const code = document.querySelector('#code')
-  code.src = `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + Math.random()
-  code.onload = () => getCode()
+  const codeImg = document.querySelector('#code')
+  codeId = utils.getRandomId();
+  codeImg.src = `${process.env.VUE_APP_CAPTCHA_URL}/util/getCodeImg?id=` + codeId
+  codeImg.onload = () => getCode()
 }
 const toRegisterPage = () => {
   router.push('/register')

@@ -154,7 +154,7 @@ import utils from '@/utils/utils'
 
 export default {
   name: 'NoticeManage',
-  data () {
+  data() {
     return {
       //查询公告的参数
       queryInfo: {
@@ -220,15 +220,11 @@ export default {
       currentUpdateNoticeStatus: ''
     }
   },
-  created () {
+  created() {
     this.getNoticeInfo()
   },
-  mounted () {
-    this.publishEditor = new E('#publishEditor')
-    this.updateEditor = new E('#updateEditor')
-  },
   methods: { //获取用户信息
-    getNoticeInfo () {
+    getNoticeInfo() {
       notice.getAllNotice(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
           this.noticeInfo = resp.data.data
@@ -245,21 +241,21 @@ export default {
       })
     },
     //表格某一行被选中
-    handleSelectionChange (val) {
+    handleSelectionChange(val) {
       this.selectedInTable = val
     },
     //分页插件的大小改变
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.queryInfo.pageSize = val
       this.getNoticeInfo()
     },
     //分页插件的页数
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.queryInfo.pageNo = val
       this.getNoticeInfo()
     },
     //功能下拉框被选择
-    selectChange (val) {
+    selectChange(val) {
       //清空上一次的操作
       this.selected = ''
       //表格中所选中的公告的id
@@ -273,7 +269,7 @@ export default {
         if (ids.length === 0) {
           this.$message.error('不允许删除当前使用公告')
         } else {
-          notice.deleteNotice({ 'ids': ids.join(',') }).then((resp) => {
+          notice.deleteNotice({'ids': ids.join(',')}).then((resp) => {
             if (resp.code === 200) {
               //删除成功后,回调更新数据
               this.getNoticeInfo()
@@ -296,39 +292,45 @@ export default {
       }
     },
     // 显示发布新闻对话框
-    showPublishNoticeDialog () {
+    showPublishNoticeDialog() {
       this.publishTableVisible = true
       window.setTimeout(() => {
         this.createPublishWangEditor()
       }, 200)
     },
     // 发布公告的表单信息重置
-    resetPublishForm () {
+    resetPublishForm() {
       //清空表格数据
       this.$refs['publishForm'].resetFields()
     },
     // 创建新增新闻的富文本编辑器
-    createPublishWangEditor () {
+    createPublishWangEditor() {
+      if (!this.publishEditor) {
+        this.publishEditor = new E('#publishEditor')
+        this.publishEditor.create()
+      }
       // 设置编辑区域高度为 300px
       this.publishEditor.config.height = 300
       this.publishEditor.config.onchange = (html) => {
         this.publishForm.content = html
       }
       this.publishEditor.txt.html(this.publishForm.content)
-      this.publishEditor.create()
     },
     // 创建更新新闻的富文本编辑器
-    createUpdateWangEditor () {
+    createUpdateWangEditor() {
+      if (!this.updateEditor) {
+        this.updateEditor = new E('#updateEditor')
+        this.updateEditor.create()
+      }
       // 设置编辑区域高度为 300px
       this.updateEditor.config.height = 300
       this.updateEditor.config.onchange = (html) => {
         this.updateForm.content = html
       }
-      this.updateEditor.create()
       this.updateEditor.txt.html(this.updateForm.content)
     },
     // 发布公告
-    publishNotice () {
+    publishNotice() {
       utils.validFormAndInvoke(this.$refs['publishForm'], () => {
         notice.publishNotice(this.publishForm).then((resp) => {
           if (resp.code === 200) {
@@ -352,19 +354,18 @@ export default {
       }, '请检查您所填写的信息是否有误')
     },
     // 显示更新公告的对话框
-    showUpdateNoticeDialog (row) {
+    showUpdateNoticeDialog(row) {
       this.updateForm.content = row.content
       this.updateForm.nid = row.nid
       this.updateForm.status = row.status + ''
       this.currentUpdateNoticeStatus = row.status + ''
       this.updateTableVisible = true
-      // 创建富文本编辑器
       window.setTimeout(() => {
         this.createUpdateWangEditor()
       }, 200)
     },
     // 更新公告
-    updateNotice () {
+    updateNotice() {
       utils.validFormAndInvoke(this.$refs['updateForm'], () => {
         notice.updateNotice(this.updateForm).then((resp) => {
           if (resp.code === 200) {
