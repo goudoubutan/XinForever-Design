@@ -157,7 +157,7 @@
 
           <el-form-item label="题目图片" label-width="120px">
             <el-upload
-              :action=`${uploadImageUrl}/teacher/uploadQuestionImage`
+              :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
               :on-preview="uploadPreview"
               :on-remove="handleUpdateRemove"
               :headers="headers"
@@ -194,7 +194,7 @@
               <el-table-column label="答案图片">
                 <template slot-scope="scope">
                   <el-upload id="answerUpload" :limit="1"
-                             :action=`${uploadImageUrl}/teacher/uploadQuestionImage`
+                             :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
                              :on-preview="uploadPreview"
                              :on-remove="handleUpdateAnswerRemove"
                              :headers="headers"
@@ -283,7 +283,7 @@
 
           <el-form-item label="题目图片" label-width="120px" prop="image">
             <el-upload
-              :action=`${uploadImageUrl}/teacher/uploadQuestionImage`
+              :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
               :on-preview="uploadPreview"
               :on-remove="handleRemove"
               :headers="headers"
@@ -320,7 +320,7 @@
               <el-table-column label="答案图片">
                 <template slot-scope="scope">
                   <el-upload :limit="1"
-                             :action=`${uploadImageUrl}/teacher/uploadQuestionImage`
+                             :action="uploadImageUrl + '/teacher/uploadQuestionImage'"
                              :on-preview="uploadPreview"
                              :on-remove="handleAnswerRemove"
                              :headers="headers"

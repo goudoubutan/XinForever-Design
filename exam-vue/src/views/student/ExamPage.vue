@@ -162,6 +162,7 @@
 
 import exam from '@/api/exam'
 import question from '@/api/question'
+import ossUtils from '@/api/ossUtils'
 
 export default {
   name: 'ExamPage',
@@ -346,7 +347,7 @@ export default {
       })
     },
     //拍照
-    takePhoto () {
+    async takePhoto () {
       if (this.cameraOn) {//摄像头是否开启 开启了才执行上传信用图片
         //获得Canvas对象
         let video = document.getElementById('video')
@@ -361,8 +362,8 @@ export default {
         //convertBase64UrlToBlob函数是将base64编码转换为Blob
         formData.append('file', this.base64ToFile(img, 'examTakePhoto.png'))
         //上传阿里云OSS
-        this.$http.post(this.API.uploadQuestionImage, formData).then((resp) => {
-          if (resp.data.code === 200) this.takePhotoUrl.push(resp.data.data)
+        await ossUtils.uploadImage(formData).then((resp) => {
+          if (resp.code === 200) this.takePhotoUrl.push(resp.data)
         })
       }
     },
@@ -460,7 +461,7 @@ export default {
       } else {//当前题目做完了
         if (this.cameraOn) {
           //结束的时候拍照上传一张
-          this.takePhoto()
+          await this.takePhoto()
           this.closeCamera()
         }
         let data = {}
@@ -488,7 +489,7 @@ export default {
   },
   watch: {
     //监控考试的剩余时间
-    duration (newVal) {
+    async duration (newVal) {
       localStorage.setItem('examDuration' + this.examInfo.examId, newVal)
       //摄像头数据
       let constraints = {
@@ -510,7 +511,7 @@ export default {
       if (newVal < 1) {
         if (this.cameraOn) {
           //结束的时候拍照上传一张
-          this.takePhoto()
+          await this.takePhoto()
           this.closeCamera()
         }
         let data = {}
