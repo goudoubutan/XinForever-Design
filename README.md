@@ -168,5 +168,5 @@
 
 - License
 
-Copyright (c) 2020-2022 by person -> wangzhouzhou
+Copyright (c) 2020-2022 by person -> Wang
 
