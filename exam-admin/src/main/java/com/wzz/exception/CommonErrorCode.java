@@ -4,6 +4,7 @@ public enum CommonErrorCode implements ErrorCode {
 
     UNAUTHORIZED(401, "未认证"),
     FORBIDDEN(403, "权限不足"),
+    SIGNATURE_FAILED(403, "验签失败"),
 
     E_100101(100101, "账号密码错误, 或用户被封禁"),
     E_100102(100102, "用户不存在!"),

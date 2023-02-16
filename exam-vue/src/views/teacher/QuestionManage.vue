@@ -423,6 +423,7 @@
 import questionBank from '@/api/questionBank'
 import question from '@/api/question'
 import utils from '@/utils/utils'
+import { generateSign } from '@/utils/sign'
 
 export default {
   name: 'QuestionManage',
@@ -1009,8 +1010,16 @@ export default {
   computed: {
     //监测头部信息的token变化
     headers () {
+      const signHeaders = {
+        'body-string': '',
+        'query-string': '',
+        'x-nonce': `${utils.getRandomId()}`,
+        'x-timestamp': `${new Date().getTime()}`
+      }
       return {
-        authorization: localStorage.getItem('authorization') || ''
+        ...signHeaders,
+        authorization: localStorage.getItem('authorization') || '',
+        sign: generateSign(JSON.stringify(signHeaders)),
       }
     },
   }

@@ -250,32 +250,17 @@ export default {
     // 获取专属证书
     getCertificate (recordId, examName) {
       this.loadingCertificate = true
-      this.$http({
-        url: '/student/getCertificate',
-        method: 'get',
-        responseType: 'arraybuffer',   //一定要设置响应类型，否则页面会是空白pdf
-        params: {
-          'examRecordId': recordId,
-          'examName': examName
-        }
+      grade.getCertificate({
+        'examRecordId': recordId,
+        'examName': examName
       }).then(res => {
-        if (res.status === 200) {// 证书获取成功
-          const binaryData = []
-          binaryData.push(res.data)
-          //获取blob链接
-          this.pdfUrl = window.URL.createObjectURL(new Blob(binaryData, { type: 'application/pdf' }))
-          // 证书创建完毕,动画结束
-          this.loadingCertificate = false
-          window.open(this.pdfUrl)
-        } else {
-          this.$notify({
-            title: 'Tips',
-            message: '证书获取失败,请稍后再试',
-            type: 'error',
-            duration: 2000
-          })
-          this.loadingCertificate = false
-        }
+        const binaryData = []
+        binaryData.push(res)
+        //获取blob链接
+        this.pdfUrl = window.URL.createObjectURL(new Blob(binaryData, { type: 'application/pdf' }))
+        // 证书创建完毕,动画结束
+        this.loadingCertificate = false
+        window.open(this.pdfUrl)
       }).catch((res) => {
         this.$notify({
           title: 'Tips',

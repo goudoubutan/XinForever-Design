@@ -5,6 +5,7 @@ import com.wzz.entity.ExamRecord;
 import com.wzz.service.ExamQuestionService;
 import com.wzz.service.QuestionService;
 import com.wzz.service.impl.ExamRecordServiceImpl;
+import com.wzz.utils.OSSUtil;
 import com.wzz.vo.CommonResult;
 import com.wzz.vo.PageResponse;
 import com.wzz.vo.QuestionVo;
@@ -15,9 +16,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.List;
 
 /**
@@ -47,8 +51,8 @@ public class StudentController {
     @GetMapping("/getCertificate")
     @ApiOperation("生成证书接口")
     @ApiImplicitParams({@ApiImplicitParam(name = "examName", value = "考试名称", required = true, dataType = "string", paramType = "query"), @ApiImplicitParam(name = "examRecordId", value = "考试记录id", required = true, dataType = "int", paramType = "query")})
-    public void getCertificate(HttpServletResponse response, @RequestParam(name = "examName") String examName, @RequestParam(name = "examRecordId") Integer examRecordId) {
-        examRecordService.createExamCertificate(response, examName, examRecordId);
+    public void getCertificate(HttpServletResponse response, @RequestParam(name = "examName") String examName, @RequestParam(name = "examRecordId") Integer examRecordId) throws UnsupportedEncodingException {
+        examRecordService.createExamCertificate(response, URLDecoder.decode(examName, "UTF-8"), examRecordId);
     }
 
     @PostMapping("/addExamRecord")
@@ -99,6 +103,19 @@ public class StudentController {
     public CommonResult<ExamQuestion> getExamQuestionByExamId(@PathVariable Integer examId) {
         return CommonResult.<ExamQuestion>builder()
                 .data(examQuestionService.getExamQuestionByExamId(examId))
+                .build();
+    }
+
+    @PostMapping("/uploadQuestionImage")
+    @ApiOperation("接受前端上传的图片,返回上传图片地址")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "file", value = "图片文件", required = true, dataType = "file", paramType = "body")
+    })
+    public CommonResult<String> uploadQuestionImage(MultipartFile file) throws Exception {
+        log.info("开始上传文件: {}", file.getOriginalFilename());
+        return CommonResult.<String>builder()
+                .data(OSSUtil.picOSS(file))
+                .message("上传成功")
                 .build();
     }
 }
