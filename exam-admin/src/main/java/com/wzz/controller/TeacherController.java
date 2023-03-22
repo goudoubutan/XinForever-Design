@@ -3,9 +3,18 @@ package com.wzz.controller;
 import com.wzz.entity.ExamRecord;
 import com.wzz.entity.Question;
 import com.wzz.entity.QuestionBank;
-import com.wzz.service.*;
+import com.wzz.service.ExamRecordService;
+import com.wzz.service.ExamService;
+import com.wzz.service.QuestionBankService;
+import com.wzz.service.QuestionService;
+import com.wzz.service.UserService;
 import com.wzz.utils.OSSUtil;
-import com.wzz.vo.*;
+import com.wzz.vo.AddExamByBankVo;
+import com.wzz.vo.AddExamByQuestionVo;
+import com.wzz.vo.CommonResult;
+import com.wzz.vo.PageResponse;
+import com.wzz.vo.QuestionVo;
+import com.wzz.vo.UserInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -13,7 +22,13 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -30,6 +45,8 @@ import java.util.List;
 @Api(tags = "老师权限相关的接口")
 @RequestMapping(value = "/teacher")
 public class TeacherController {
+
+    private final OSSUtil ossUtil;
 
     private final ExamService examService;
 
@@ -110,7 +127,7 @@ public class TeacherController {
     public CommonResult<String> uploadQuestionImage(MultipartFile file) throws Exception {
         log.info("开始上传文件: {}", file.getOriginalFilename());
         return CommonResult.<String>builder()
-                .data(OSSUtil.picOSS(file))
+                .data(ossUtil.picOSS(file))
                 .message("上传成功")
                 .build();
     }

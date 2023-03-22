@@ -15,7 +15,13 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +40,8 @@ import java.util.List;
 @Api(tags = "学生权限相关的接口")
 @RequestMapping(value = "/student")
 public class StudentController {
+
+    private final OSSUtil ossUtil;
 
     private final ExamRecordServiceImpl examRecordService;
 
@@ -114,7 +122,7 @@ public class StudentController {
     public CommonResult<String> uploadQuestionImage(MultipartFile file) throws Exception {
         log.info("开始上传文件: {}", file.getOriginalFilename());
         return CommonResult.<String>builder()
-                .data(OSSUtil.picOSS(file))
+                .data(ossUtil.picOSS(file))
                 .message("上传成功")
                 .build();
     }

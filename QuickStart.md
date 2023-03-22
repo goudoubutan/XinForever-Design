@@ -8,6 +8,7 @@
 
 > 前提条件
 >
+> NODE12 JDK8以上
 > 1. MySQL
 > 2. Redis
 > 3. IDEA

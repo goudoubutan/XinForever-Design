@@ -2,6 +2,9 @@ package com.wzz.utils;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
+import com.wzz.config.OSSConfig;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
@@ -13,17 +16,18 @@ import java.util.UUID;
  * @author by wzz
  * @implNote 2020/10/26 10:25
  */
+@Component
+@RequiredArgsConstructor
 public class OSSUtil {
 
-    public static String ENDPOINT = "你的oss地址";
-    public static String ACCESSKEYID = "oss配置信息";
-    public static String ACCESSKEYSECRET = "";
-    public static String BUCKETNAME = "";
-    public static String KEY = "images/upload/";
+    private final OSSConfig ossConfig;
 
-    public static String picOSS(MultipartFile uploadFile) throws Exception {
+    public String picOSS(MultipartFile uploadFile) throws Exception {
+        if (!ossConfig.isEnable()) {
+            return "";
+        }
         // 创建OSSClient实例
-        OSSClient ossClient = new OSSClient(ENDPOINT, ACCESSKEYID, ACCESSKEYSECRET);
+        OSSClient ossClient = new OSSClient(ossConfig.getEndpoint(), ossConfig.getAccesskeyid(), ossConfig.getAccesskeysecret());
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
         // 上传
         long time = new Date().getTime();
@@ -36,13 +40,13 @@ public class OSSUtil {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentType(getcontentType(fileName.substring(fileName.lastIndexOf("."))));
         //上传开始
-        ossClient.putObject(BUCKETNAME, KEY + date + "/" + fileName, new ByteArrayInputStream(uploadFile.getBytes()), objectMetadata);
+        ossClient.putObject(ossConfig.getBucketname(), ossConfig.getKey() + date + "/" + fileName, new ByteArrayInputStream(uploadFile.getBytes()), objectMetadata);
 
         // 关闭client
         ossClient.shutdown();
 //        Date expiration = new Date(new Date().getTime() + 3600L * 1000 * 24 * 365 * 10);
 //        return ossClient.generatePresignedUrl(BUCKETNAME, KEY + date + "/" + uploadFile.getOriginalFilename(), expiration).toString();
-        return "https://" + BUCKETNAME + ".oss-cn-beijing.aliyuncs.com" + "/" + KEY + date + "/" + fileName;
+        return String.format("https://%s.%s/%s/%s", ossConfig.getBucketname(), ossConfig.getHost(), ossConfig.getKey() + date, fileName);
     }
 
     //根据文件的类型 设置请求头
