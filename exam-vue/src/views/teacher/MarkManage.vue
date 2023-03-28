@@ -44,10 +44,10 @@
 
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button :type="scope.row.totalScore === null ? 'primary' : 'warning'" icon="el-icon-view" size="small"
-                       :disabled="scope.row.totalScore !== null"
+            <el-button :type="checkMarkButtonNeedShow(scope.row) ? 'primary' : 'warning'" icon="el-icon-view" size="small"
+                       :disabled="!checkMarkButtonNeedShow(scope.row)"
                        @click="$router.push('/markExam/' + scope.row.recordId)">
-              {{ scope.row.totalScore === null ? '批阅' : '已批阅' }}
+              {{ checkMarkButtonNeedShow(scope.row) ? '批阅' : '已批阅' }}
             </el-button>
           </template>
         </el-table-column>
@@ -73,7 +73,7 @@ import user from '@/api/user'
 
 export default {
   name: 'MarkManage',
-  data () {
+  data() {
     return {
       queryInfo: {
         pageNo: 1,
@@ -89,12 +89,12 @@ export default {
       total: 0
     }
   },
-  created () {
+  created() {
     this.getExamRecords()
     this.getAllExamInfo()
   },
   methods: {
-    async getExamRecords () {
+    async getExamRecords() {
       await exam.getExamRecord(this.queryInfo).then(async resp => {
         if (resp.code === 200) {
           await this.getAllExamInfo()
@@ -105,7 +105,7 @@ export default {
             }
           })
           let userInfo = []
-          await user.getUserByIds({ 'userIds': userIds.join(',') }).then(resp => {
+          await user.getUserByIds({'userIds': userIds.join(',')}).then(resp => {
             if (resp.code === 200) {
               userInfo = resp.data
             }
@@ -122,36 +122,45 @@ export default {
         }
       })
     },
-    getAllExamInfo () {
+    getAllExamInfo() {
       exam.allExamInfo().then((resp) => {
         if (resp.code === 200) {
           this.allExamInfo = resp.data
         }
       })
     },
-    operation (v) {
+    operation(v) {
       if (v === '') this.queryInfo.examId = null
       this.getExamRecords()
     },
-    setExamName () {
+    setExamName() {
       this.examRecords.forEach(item => {
         this.allExamInfo.forEach(i2 => {
           if (item.examId === i2.examId) {
             this.$set(item, 'examName', i2.examName)
           }
         })
+        if (!item.examName) {
+          this.$set(item, 'examName', '<当前考试已不存在>')
+        }
       })
     },
     //分页页面大小改变
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.queryInfo.pageSize = val
       this.getExamRecords()
     },
     //分页插件的页数
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.queryInfo.pageNo = val
       this.getExamRecords()
     },
+    //检查批阅按钮是否展示
+    checkMarkButtonNeedShow(record) {
+      return record.totalScore === null && this.allExamInfo
+        .map(examInfo => examInfo.examId)
+        .includes(record.examId)
+    }
   }
 }
 </script>
