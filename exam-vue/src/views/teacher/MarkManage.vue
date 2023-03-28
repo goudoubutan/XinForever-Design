@@ -70,6 +70,7 @@
 <script>
 import exam from '@/api/exam'
 import user from '@/api/user'
+import constants from '@/utils/constants'
 
 export default {
   name: 'MarkManage',
@@ -141,7 +142,7 @@ export default {
           }
         })
         if (!item.examName) {
-          this.$set(item, 'examName', '<当前考试已不存在>')
+          this.$set(item, 'examName', constants.defaultExamName)
         }
       })
     },

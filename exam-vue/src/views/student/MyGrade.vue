@@ -142,10 +142,11 @@
 import grade from '@/api/grade'
 import exam from '@/api/exam'
 import question from '@/api/question'
+import constants from '@/utils/constants'
 
 export default {
   name: 'MyGrade',
-  data () {
+  data() {
     return {
       queryInfo: {
         pageNo: 1,
@@ -175,11 +176,11 @@ export default {
       loadingCertificate: false
     }
   },
-  created () {
+  created() {
     this.getMyGrade()
   },
   methods: {
-    getMyGrade () {
+    getMyGrade() {
       grade.getMyGrade(this.queryInfo).then((resp) => {
         if (resp.code === 200) {
           this.grade = resp.data.data
@@ -189,7 +190,7 @@ export default {
         }
       })
     },
-    setExamName () {
+    setExamName() {
       this.grade.forEach(item => {
         this.allExamInfo.forEach(i2 => {
           if (item.examId === i2.examId) {
@@ -197,9 +198,12 @@ export default {
             this.$set(item, 'passScore', i2.passScore)
           }
         })
+        if (!item.examName) {
+          this.$set(item, 'examName', constants.defaultExamName)
+        }
       })
     },
-    getAllExamInfo () {
+    getAllExamInfo() {
       exam.allExamInfo().then((resp) => {
         if (resp.code === 200) {
           this.allExamInfo = resp.data
@@ -207,23 +211,23 @@ export default {
         }
       })
     },
-    operation (v) {
+    operation(v) {
       if (v === '') this.queryInfo.examId = null
       this.getMyGrade()
     },
     //分页页面大小改变
-    handleSizeChange (val) {
+    handleSizeChange(val) {
       this.queryInfo.pageSize = val
       this.getMyGrade()
     },
     //分页插件的页数
-    handleCurrentChange (val) {
+    handleCurrentChange(val) {
       this.queryInfo.pageNo = val
       this.getMyGrade()
     },
     //根据ids查询题目信息
-    async getQuestionInfoByIds (questionIds) {
-      await question.getQuestionByIds({ ids: questionIds }).then((resp) => {
+    async getQuestionInfoByIds(questionIds) {
+      await question.getQuestionByIds({ids: questionIds}).then((resp) => {
         if (resp.code === 200) {
           this.questionInfo = resp?.data?.data || []
           //重置问题的顺序 单选 多选 判断 简答
@@ -233,7 +237,7 @@ export default {
         }
       })
     },
-    showErrorQuestion (row) {
+    showErrorQuestion(row) {
       if (row.errorQuestionIds === null) {
         this.$message.warning('当前考试没有逻辑错题O(∩_∩)O~')
       } else {
@@ -243,12 +247,12 @@ export default {
       }
     },
     //点击展示高清大图
-    showBigImg (url) {
+    showBigImg(url) {
       this.bigImgUrl = url
       this.bigImgDialog = true
     },
     // 获取专属证书
-    getCertificate (recordId, examName) {
+    getCertificate(recordId, examName) {
       this.loadingCertificate = true
       grade.getCertificate({
         'examRecordId': recordId,
@@ -257,7 +261,7 @@ export default {
         const binaryData = []
         binaryData.push(res)
         //获取blob链接
-        this.pdfUrl = window.URL.createObjectURL(new Blob(binaryData, { type: 'application/pdf' }))
+        this.pdfUrl = window.URL.createObjectURL(new Blob(binaryData, {type: 'application/pdf'}))
         // 证书创建完毕,动画结束
         this.loadingCertificate = false
         window.open(this.pdfUrl)
@@ -274,7 +278,7 @@ export default {
   },
   computed: {
     //是否通过考试
-    isOrNotPassExam (row) {
+    isOrNotPassExam(row) {
       return (row) => {
         let flag = false
         this.allExamInfo.forEach(item => {
