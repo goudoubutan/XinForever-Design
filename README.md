@@ -1,7 +1,11 @@
-# 追风考试系统 
+<h1 style="text-align: center">追风考试系统</h1>
+
+<div style="text-align: center">
+
 [![star](https://gitee.com/wzhouzhou/exam_system/badge/star.svg?theme=dark)](https://gitee.com/wzhouzhou/exam_system/stargazers)[![fork](https://gitee.com/wzhouzhou/exam_system/badge/fork.svg?theme=white)](https://gitee.com/wzhouzhou/exam_system/members)
 
 [![Fork me on Gitee](https://gitee.com/wzhouzhou/exam_system/widgets/widget_4.svg?color=d716f0)](https://gitee.com/wzhouzhou/exam_system)
+</div>
 
 追风考试系统是一个多角色在线培训考试系统，系统集成了用户管理、角色管理、题库管理、试
 
@@ -21,12 +25,12 @@
 
 - # [ :point_right: 线上体验](http://exam.wzzz.fun)
 
-
 ``` 
    管理员账号: wzz 
    密码: 12345
    Tips: 为了各位有良好的体验,请不要更改演示账号的权限以及地址, 如账号异常,请加q群970804317私信群主~!
 ```
+
 - [码云地址](https://gitee.com/wzhouzhou/exam_system)
 - [Github地址(不同步更新)]()
 
@@ -58,7 +62,8 @@
 
 **2.** **在线考试**
 
-学生用户在注册登录之后，可以在本系统进行在线的考试，考试可由教师和管理员进行布置并设置考试权限（公开，密码），考试题型分为 单选、多选、判断、简答题，并支持题目附带配图。考试过程中需开启摄像头进行考试，系统会自动抓拍考生实时考试状态。
+学生用户在注册登录之后，可以在本系统进行在线的考试，考试可由教师和管理员进行布置并设置考试权限（公开，密码），考试题型分为
+单选、多选、判断、简答题，并支持题目附带配图。考试过程中需开启摄像头进行考试，系统会自动抓拍考生实时考试状态。
 
 **3.** **成绩模块**
 

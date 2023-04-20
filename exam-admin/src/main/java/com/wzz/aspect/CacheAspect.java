@@ -1,5 +1,6 @@
-package com.wzz.annotation;
+package com.wzz.aspect;
 
+import com.wzz.annotation.Cache;
 import com.wzz.exception.BusinessException;
 import com.wzz.exception.CommonErrorCode;
 import com.wzz.utils.RedisUtil;

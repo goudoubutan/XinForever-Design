@@ -128,7 +128,7 @@ import question from '@/api/question'
 
 export default {
   name: 'TrainPage',
-  data () {
+  data() {
     return {
       //当前题库id
       bankId: this.$route.params.bankId,
@@ -167,7 +167,7 @@ export default {
     }
   },
   props: ['tagInfo'],
-  created () {
+  created() {
     //一创建就改变头部的面包屑
     this.$emit('giveChildChangeBreakInfo', '开始训练', '在线考试')
     this.createTagsInParent()
@@ -175,7 +175,7 @@ export default {
   },
   methods: {
     //向父组件中添加头部的tags标签
-    createTagsInParent () {
+    createTagsInParent() {
       let flag = false
       this.tagInfo.map(item => {
         //如果tags全部符合
@@ -189,10 +189,10 @@ export default {
       if (!flag) this.$emit('giveChildAddTag', '开始训练', this.$route.path)
     },
     //获取题目顺序 并按照对应方式加载
-    getQuestionInfo () {
+    getQuestionInfo() {
       switch (parseInt(this.$route.params.trainType)) {
         case 1: {//顺序生成题目
-          questionBank.getQuestionByBank({ 'bankId': this.bankId }).then((resp) => {
+          questionBank.getQuestionByBank({'bankId': this.bankId}).then((resp) => {
             if (resp.code === 200) {
               this.currentBankQuestion = resp.data
               this.loading = false
@@ -203,7 +203,7 @@ export default {
           break
         }
         case 2: {//随机练习
-          questionBank.getQuestionByBank({ 'bankId': this.bankId }).then((resp) => {
+          questionBank.getQuestionByBank({'bankId': this.bankId}).then((resp) => {
             if (resp.code === 200) {
               //随机打乱题目
               let arr = resp.data
@@ -266,23 +266,23 @@ export default {
       }
     },
     //点击展示高清大图
-    showBigImg (url) {
+    showBigImg(url) {
       this.bigImgUrl = url
       this.bigImgDialog = true
     },
     //检验单选题的用户选择的答案
-    checkSingleAnswer (index) {
+    checkSingleAnswer(index) {
       if (this.userAnswer[this.curIndex] === undefined && (index + '') === this.trueAnswer[this.curIndex]) {//答题并且是对的
         this.userAnswer[this.curIndex] = index
         this.trueSum++
-        if (this.curIndex < this.trueAnswer.length - 1) this.curIndex++
+        if (this.curIndex < this.trueAnswer.length - 1) this.nextQuestion()
       } else if (this.userAnswer[this.curIndex] === undefined && (index + '') !== this.trueAnswer[this.curIndex]) {//答题是错误的答案
         this.userAnswer[this.curIndex] = index
         this.wrongSum++
       }
     },
     //多选题用户的答案选中
-    selectedMultipleAnswer (index) {
+    selectedMultipleAnswer(index) {
       if (!this.confirmMultiple.includes(this.curIndex)) {//当前题目还没确认答案
         if (this.userAnswer[this.curIndex] === undefined) {//当前是多选的第一个答案
           this.$set(this.userAnswer, this.curIndex, index)
@@ -302,7 +302,7 @@ export default {
       }
     },
     //当前题库的正确答案的数据
-    getTrueAnswer () {
+    getTrueAnswer() {
       let x = []
       this.currentBankQuestion.forEach((item, index) => {
         x = []
@@ -314,7 +314,7 @@ export default {
       })
     },
     //多选题确认
-    confirmMultipleAnswer () {
+    confirmMultipleAnswer() {
       //答案格式化
       this.userAnswer[this.curIndex] = String(this.userAnswer[this.curIndex]).split(',').sort(function (a, b) {
         return a - b
@@ -322,16 +322,20 @@ export default {
       if (this.userAnswer[this.curIndex] === this.trueAnswer[this.curIndex]) {
         this.confirmMultiple.push(this.curIndex)
         this.trueSum++
-        this.curIndex++
+        this.nextQuestion()
       } else {
         this.wrongSum++
         this.confirmMultiple.push(this.curIndex)
       }
     },
+    //自动切换下一题
+    nextQuestion() {
+      this.curIndex = Math.min(this.curIndex + 1, this.currentBankQuestion.length - 1)
+    }
   },
   computed: {
     //题目正确的下标
-    trueAnswerIndex () {
+    trueAnswerIndex() {
       let answer = []
       this.currentBankQuestion[this.curIndex].answer.forEach((item, index) => {
         if (item.isTrue === 'true') answer.push(index)
@@ -339,7 +343,7 @@ export default {
       return answer.join(',')
     },
     //多选题的正确答案提示
-    multipleAnswer () {
+    multipleAnswer() {
       let res = String()
       String(this.trueAnswer[this.curIndex]).split(',').forEach(item => {
         res += String(this.optionName[parseInt(item)])

@@ -22,8 +22,7 @@ import java.util.Date;
 @TableName(value = "question")
 public class Question {
 
-    // 在新增试题的时候自己设置id,使用自增会影响
-//    @TableId(type = IdType.AUTO)
+    @TableId(type = IdType.AUTO)
     @ApiModelProperty(value = "主键 题目id", example = "1")
     private Integer id;
 

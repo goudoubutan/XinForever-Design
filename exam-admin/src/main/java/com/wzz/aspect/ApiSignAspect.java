@@ -1,4 +1,4 @@
-package com.wzz.annotation;
+package com.wzz.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wzz.exception.BusinessException;

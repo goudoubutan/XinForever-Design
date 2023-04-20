@@ -277,7 +277,7 @@ public class QuestionBankServiceImpl extends ServiceImpl<QuestionBankMapper, Que
             // 删除题库
             questionBankMapper.deleteById(Integer.parseInt(s));
             // 清楚缓存
-            redisUtil.del("questionBankQuestion:" + s);
+            redisUtil.del("questionBankQuestion:" + s, "questionBanks");
         }
     }
 

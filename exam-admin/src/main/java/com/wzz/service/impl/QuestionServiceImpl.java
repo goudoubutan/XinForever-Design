@@ -107,13 +107,9 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
     @Transactional
     @Override
     public void addQuestion(QuestionVo questionVo) {
-        // 查询所有的问题,然后就可以设置当前问题的id了
-        List<Question> qus = questionMapper.selectList(null);
-        Integer currentQuId = qus.get(qus.size() - 1).getId() + 1;
         Question question = new Question();
         // 设置基础字段
         question.setQuType(questionVo.getQuestionType());
-        question.setId(currentQuId);
         setQuestionField(question, questionVo);
         // 设置题目插图
         if (questionVo.getImages().length != 0) {
@@ -121,8 +117,8 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
             question.setImage(QuImages.substring(1, QuImages.length() - 1).replaceAll(" ", ""));
         }
         buildBankName(questionVo, question);
-
         questionMapper.insert(question);
+        Integer currentQuId = question.getId();
         // 设置答案对象
         StringBuilder multipleChoice = new StringBuilder();
         if (questionVo.getQuestionType() != 4) {// 不为简答题
@@ -272,12 +268,15 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
                     qa[i] = answer1;
                 }
             } else {// 多选
+                List<Integer> multiTrueOptions = Arrays.stream(answer.getTrueOption().split(","))
+                        .map(Integer::parseInt)
+                        .collect(Collectors.toList());
                 for (int i = 0; i < allOption.length; i++) {
                     QuestionVo.Answer answer1 = new QuestionVo.Answer();
                     answer1.setId(i);
                     answer1.setAnswer(allOption[i]);
                     answer1.setImages(imgs);
-                    if (i < answer.getTrueOption().split(",").length && i == Integer.parseInt(answer.getTrueOption().split(",")[i])) {
+                    if (multiTrueOptions.contains(i)) {
                         answer1.setIsTrue("true");
                         answer1.setAnalysis(answer.getAnalysis());
                     }

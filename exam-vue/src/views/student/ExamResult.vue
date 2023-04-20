@@ -153,8 +153,8 @@ export default {
       if (!flag) this.$emit('giveChildAddTag', '考试结果', this.$route.path)
     },
     //查询用户当时考试的信息
-    getExamRecord () {
-      exam.getExamRecordById(this.$route.params.recordId).then((resp) => {
+    async getExamRecord () {
+      await exam.getExamRecordById(this.$route.params.recordId).then((resp) => {
         if (resp.code === 200) {
           this.examRecord = resp.data
           this.getExamInfoById(resp.data.examId)
