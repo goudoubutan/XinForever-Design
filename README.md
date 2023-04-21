@@ -1,11 +1,20 @@
-<h1 style="text-align: center">追风考试系统</h1>
+<h1 align="center">
+	追风考试系统
+</h1>
+<p align="center">
+    <img src="https://img.shields.io/badge/SpringBoot-2.2.7-brightgreen" />
+    <img src="https://img.shields.io/badge/Vue-2.x-brightgreen" />
+    <img src="https://img.shields.io/badge/MySQL-5.7-brightgreen" />
+    <img src="https://img.shields.io/badge/Redis-6-brightgreen" />
+</p>
+<p align="center">
+    <img src="https://gitee.com/wzhouzhou/exam_system/badge/star.svg?theme=dark" />
+    <img src="https://gitee.com/wzhouzhou/exam_system/badge/fork.svg?theme=white" />
+</p>
+<p align="center">
+    <img src="https://gitee.com/wzhouzhou/exam_system/widgets/widget_4.svg?color=d716f0" />
+</p>
 
-<div style="text-align: center">
-
-[![star](https://gitee.com/wzhouzhou/exam_system/badge/star.svg?theme=dark)](https://gitee.com/wzhouzhou/exam_system/stargazers)[![fork](https://gitee.com/wzhouzhou/exam_system/badge/fork.svg?theme=white)](https://gitee.com/wzhouzhou/exam_system/members)
-
-[![Fork me on Gitee](https://gitee.com/wzhouzhou/exam_system/widgets/widget_4.svg?color=d716f0)](https://gitee.com/wzhouzhou/exam_system)
-</div>
 
 追风考试系统是一个多角色在线培训考试系统，系统集成了用户管理、角色管理、题库管理、试
 
@@ -13,9 +22,6 @@
 
 户在此系统中进行练习并不断提升自己，在考试中不断进步。
 
-> 由于群主之前号被黑,之前的群已被解散, 如果想重新入群就戳这里 > 372964554
-
-> 群主目前也会不定期直播写新项目哦, 欢迎各位哦~
 
 `请务必将文档看完, 很多问题都可以在文档中找到解决, 也可以加入群一起交流, 群号: 372964554 下面也会有二维码`
 
