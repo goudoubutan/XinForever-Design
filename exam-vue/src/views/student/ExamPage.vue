@@ -166,7 +166,7 @@ import ossUtils from '@/api/ossUtils'
 
 export default {
   name: 'ExamPage',
-  data () {
+  data() {
     return {
       //当前考试的信息
       examInfo: {},
@@ -200,7 +200,7 @@ export default {
       cameraOn: false,
     }
   },
-  created () {
+  created() {
     this.getExamInfo()
     //页面数据加载的等待状态栏
     this.loading = this.$Loading.service({
@@ -229,7 +229,7 @@ export default {
       })
     }
   },
-  mounted () {
+  mounted() {
     //关闭浏览器窗口的时候移除 localstorage的时长
     var userAgent = navigator.userAgent //取得浏览器的userAgent字符串
     var isOpera = userAgent.indexOf('Opera') > -1 //判断是否Opera浏览器
@@ -257,13 +257,20 @@ export default {
   },
   methods: {
     //查询当前考试的信息
-    getExamInfo () {
+    getExamInfo() {
       exam.getExamInfoById(this.$route.params).then((resp) => {
         if (resp.code === 200) {
           this.examInfo = resp.data
           //设置定时(秒)
-          if (localStorage.getItem('examDuration' + this.examInfo.examId) === '0') localStorage.removeItem('examDuration' + this.examInfo.examId)
-          this.duration = localStorage.getItem('examDuration' + this.examInfo.examId) || resp.data.examDuration * 60
+          try {
+            const examDuration = JSON.parse(localStorage.getItem('examDuration' + this.examInfo.examId) || "{}");
+            if (examDuration.duration === 0 || Date.now() >= (examDuration.timestamp || Date.now()) + (examDuration.duration * 1000 || Date.now())) {
+              localStorage.removeItem('examDuration' + this.examInfo.examId)
+            }
+            this.duration = Math.min(JSON.parse(localStorage.getItem('examDuration' + this.examInfo.examId) || "{}").duration || resp.data.examDuration * 60, resp.data.examDuration * 60)
+          } catch (e) {
+            localStorage.removeItem('examDuration' + this.examInfo.examId)
+          }
           //考试剩余时间定时器
           this.timer = window.setInterval(() => {
             if (this.duration > 0) this.duration--
@@ -273,8 +280,8 @@ export default {
       })
     },
     //查询考试的题目信息
-    async getQuestionInfo (ids) {
-      await question.getQuestionByIds({ 'ids': ids.join(',') }).then(resp => {
+    async getQuestionInfo(ids) {
+      await question.getQuestionByIds({'ids': ids.join(',')}).then(resp => {
         if (resp.code === 200) {
           this.questionInfo = resp?.data?.data || []
           //重置问题的顺序 单选 多选 判断 简答
@@ -287,16 +294,16 @@ export default {
       this.show = true
     },
     //点击展示高清大图
-    showBigImg (url) {
+    showBigImg(url) {
       this.bigImgUrl = url
       this.bigImgDialog = true
     },
     //检验单选题的用户选择的答案
-    checkSingleAnswer (index) {
+    checkSingleAnswer(index) {
       this.$set(this.userAnswer, this.curIndex, index)
     },
     //多选题用户的答案选中
-    selectedMultipleAnswer (index) {
+    selectedMultipleAnswer(index) {
       if (this.userAnswer[this.curIndex] === undefined) {//当前是多选的第一个答案
         this.$set(this.userAnswer, this.curIndex, index)
       } else if (String(this.userAnswer[this.curIndex]).split(',').includes(index + '')) {//取消选中
@@ -322,7 +329,7 @@ export default {
       }
     },
     //调用摄像头
-    getCamera () {
+    getCamera() {
       let constraints = {
         video: {
           width: 200,
@@ -347,7 +354,7 @@ export default {
       })
     },
     //拍照
-    async takePhoto () {
+    async takePhoto() {
       if (this.cameraOn) {//摄像头是否开启 开启了才执行上传信用图片
         //获得Canvas对象
         let video = document.getElementById('video')
@@ -368,7 +375,7 @@ export default {
       }
     },
     //关闭摄像头
-    closeCamera () {
+    closeCamera() {
       let stream = document.getElementById('video').srcObject
       let tracks = stream.getTracks()
       tracks.forEach(function (track) {
@@ -377,7 +384,7 @@ export default {
       document.getElementById('video').srcObject = null
     },
     //将摄像头截图的base64串转化为file提交后台
-    base64ToFile (urlData, fileName) {
+    base64ToFile(urlData, fileName) {
       let arr = urlData.split(',')
       let mime = arr[0].match(/:(.*?);/)[1]
       let bytes = atob(arr[1]) // 解码base64
@@ -386,10 +393,10 @@ export default {
       while (n--) {
         ia[n] = bytes.charCodeAt(n)
       }
-      return new File([ia], fileName, { type: mime })
+      return new File([ia], fileName, {type: mime})
     },
     //上传用户考试信息进入后台
-    async uploadExamToAdmin () {
+    async uploadExamToAdmin() {
       if (this.cameraOn) await this.takePhoto()//结束的时候拍照上传一张
       // 正则
       var reg = new RegExp('-', 'g')
@@ -489,8 +496,12 @@ export default {
   },
   watch: {
     //监控考试的剩余时间
-    async duration (newVal) {
-      localStorage.setItem('examDuration' + this.examInfo.examId, newVal)
+    async duration(newVal) {
+      const examDuration = {
+        duration: newVal,
+        timestamp: Date.now()
+      };
+      localStorage.setItem('examDuration' + this.examInfo.examId, JSON.stringify(examDuration));
       //摄像头数据
       let constraints = {
         video: {
