@@ -7,9 +7,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @SpringBootApplication
 public class ExamAdminApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ExamAdminApplication.class, args);
     }
-
 }
